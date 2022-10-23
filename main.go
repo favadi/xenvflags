@@ -28,8 +28,19 @@ SHFMT_EXTRA_ARGS='-i 2' shfmt --> shfmt -i 2
 `
 )
 
+var (
+	version = "dev"
+)
+
 func isDebug() bool {
 	return os.Getenv("XENVFLAGS_DEBUG") == "true"
+}
+
+func printVersion() {
+	if os.Getenv("XENVFLAGS_VERSION") == "true" {
+		fmt.Println(version)
+		os.Exit(0)
+	}
 }
 
 // isSymlink returns an error if the given file is not a symlink.
@@ -67,6 +78,8 @@ func getExtraArgs(cmdName string) ([]string, error) {
 }
 
 func main() {
+	printVersion()
+
 	symExecutable, err := exec.LookPath(os.Args[0])
 	if err != nil {
 		log.Fatal(err)
@@ -93,6 +106,7 @@ func main() {
 	}
 
 	if isDebug() {
+		log.Printf("version: %s", version)
 		log.Printf("executable: %s", executable)
 		log.Printf("original arguments: %s", origArgs)
 		log.Printf("extra arguments from env: %s", extraArgs)
