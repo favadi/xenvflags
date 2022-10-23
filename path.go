@@ -8,8 +8,13 @@ import (
 	"strings"
 )
 
-// lookPath search for an executable named file in the given path that is not
-// in the excludedDir.
+
+func lookPath(file, excludedDir string) (string, error) {
+	return lookPathEnv(file, excludedDir, os.Getenv("PATH"))
+}
+
+// lookPathEnv search for an executable named file in the given path that is
+// not in the excludedDir.
 // Example:
 //   - file: prog
 //   - path: /Users/john/bin:/usr/local/bin
@@ -18,7 +23,7 @@ import (
 //   - excludedDir: /Users/john/bin/
 //
 // this function will return /usr/local/bin/prog, not /Users/john/bin/prog.
-func lookPath(file, excludedDir, path string) (string, error) {
+func lookPathEnv(file, excludedDir, path string) (string, error) {
 	excludedDir = filepath.Clean(excludedDir)
 
 	var paths []string
